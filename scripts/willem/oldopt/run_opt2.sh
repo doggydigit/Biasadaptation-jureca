@@ -1,0 +1,1 @@
+nohup python3 biasopt.py --ntask 47 --tasktype 1vall --method sc scd sm pmd pmdd bmd bmdd --nhidden 10 25 50 100 250 500 --nbfactor 100 --nepoch 400 --path /Users/wybo/Data/results/results_bias_opt/ &
