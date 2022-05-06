@@ -435,13 +435,13 @@ def get_train_eval_model(result_dir, prog_params, save_params, train_params, tra
     # Print average performance
     if prog_params["test_performance"]:
         ptype = "test"
-        average_performance = sum(results["test_performance"]) / train_params["highseed"]
+        average_performance = sum(results["test_performance"]) / len(seeds)
     elif prog_params["validate_performance"]:
         ptype = "validation"
-        average_performance = sum(results["validation_performance"]) / train_params["highseed"]
+        average_performance = sum(results["validation_performance"]) / len(seeds)
     else:
         ptype = "training"
-        average_performance = sum(results["train_performance"]) / train_params["highseed"]
+        average_performance = sum(results["train_performance"]) / len(seeds)
     print("{} network {} trained on {} had an average {} performance of {}% over {} seeds".format(
         prog_params["model_type"], prog_params["nr_hidden"], prog_params["dataset"], ptype, average_performance,
         train_params["highseed"])

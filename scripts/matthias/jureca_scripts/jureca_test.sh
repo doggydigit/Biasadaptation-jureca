@@ -11,13 +11,13 @@
 module purge
 jutil env activate -p jinm60 -A jinm60
 source env/bin/activate
-module load Python
 module load GCC
 module load OpenMPI
 module load mpi4py/3.1.3
 module load tqdm
 module load scikit-learn
 module load matplotlib
+module load Python
 cd Biasadaptation-jureca/scripts/matthias/
 srun python3 jureca_run.py 0
 deactivate
