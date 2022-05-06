@@ -23,8 +23,8 @@ if __name__ == '__main__':
             gl = float(params[3])
             seeds = list(map(int, params[4].split(',')))
             print(seeds)
-            scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                        verbose=True, saving=False, g_lr=gl, seeds=seeds, nr_epochs=[1])
+            scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=True,
+                        verbose=True, saving=False, g_lr=gl, seeds=seeds)
         else:
             raise ValueError(jobs[0])
         sys.stdout.close()
