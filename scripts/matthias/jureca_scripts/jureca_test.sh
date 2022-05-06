@@ -18,6 +18,6 @@ module load mpi4py/3.1.3
 module load tqdm
 module load scikit-learn
 module load matplotlib
-cd /p/home/jusers/tsai1/BiasAdaptation-jureca/scripts/matthias/
+cd Biasadaptation-jureca/scripts/matthias/
 srun python3 jureca_run.py 0
 deactivate
