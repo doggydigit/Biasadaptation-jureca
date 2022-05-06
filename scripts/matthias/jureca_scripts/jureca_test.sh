@@ -9,6 +9,7 @@
 #SBATCH --job-name=t_g_wx
 #SBATCH --partition=dc-cpu
 module purge
+jutil env activate -p jinm60 -A jinm60
 source env/bin/activate
 module load Python
 module load GCC
@@ -17,6 +18,6 @@ module load mpi4py/3.1.3
 module load tqdm
 module load scikit-learn
 module load matplotlib
-cd BiasAdaptation-jureca/scripts/matthias/
+cd /p/home/jusers/tsai1/BiasAdaptation-jureca/scripts/matthias/
 srun python3 jureca_run.py 0
 deactivate
