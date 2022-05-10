@@ -27,5 +27,5 @@ if __name__ == '__main__':
                                 result = pickle_load(f)
                                 for k in []:
                                     results[k] += result[k]
-                    with open(fdir + fname + "pickle", "wb") as f:
+                    with open(fdir + fname + ".pickle", "wb") as f:
                         pickle_dump(results, f, protocol=HIGHEST_PROTOCOL)
