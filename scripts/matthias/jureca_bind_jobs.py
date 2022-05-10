@@ -6,8 +6,8 @@ if __name__ == '__main__':
     ls = ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"]
     gls = ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"]
     ss = ["0,1", "2,3", "4,5", "6,7", "8,9", "10,11", "12,13", "14,15", "16,17", "18,19"]
-    job_text = "scan_train_g_xw"
-    fdir = "results/{}/individual/"
+    job_text = "scan_train_xlr_wlr"
+    fdir = "../../results/{}/individual/".format(job_text)
     nrsubjobs = 10
     for p1 in ns:
         for p2 in ds:
@@ -19,4 +19,4 @@ if __name__ == '__main__':
                         with open(fpath, "rb") as f:
                             result = pickle_load(f)
                             print(result)
-                            exit
+                            exit()

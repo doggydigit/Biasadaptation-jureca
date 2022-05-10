@@ -1,0 +1,7 @@
+biasadaptation.egg-info/*
+biasadaptation/utils/data/*
+scripts/matthias/jureca_logs/*
+scripts/matthias/__pycache__/*
+scipts/matthias/.cache*
+dist/*
+build/*
