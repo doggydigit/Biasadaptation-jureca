@@ -2,6 +2,7 @@ biasadaptation.egg-info/*
 biasadaptation/utils/data/*
 scripts/matthias/jureca_logs/*
 scripts/matthias/__pycache__/*
-scipts/matthias/.cache*
+scripts/matthias/.cache*
+results/scan_train_xlr_wlr/individual/individual_seed/*
 dist/*
 build/*

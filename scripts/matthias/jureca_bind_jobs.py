@@ -20,7 +20,7 @@ if __name__ == '__main__':
             for p3 in ls[p2]:
                 for p4 in gls[p2]:
                     results = None
-                    fname = "network_{}_{}_mse_tanh_es_wlr_{}_glr_{}".format(p1, p2, p3, p4)
+                    fname = "network_{}_{}_mse_tanh_es_wlr_{}_glr_{}".format(p1, p2, float(p3), float(p4))
                     for p5 in range(nrsubjobs):
                         fpath = fdir + "individual_seed/" + fname + "_{}.pickle".format([2*p5, 2*p5+1])
                         with open(fpath, "rb") as f:
@@ -30,5 +30,5 @@ if __name__ == '__main__':
                                 result = pickle_load(f)
                                 for k in []:
                                     results[k] += result[k]
-                    with open(fdir + fname + "pickle", "wb") as f:
+                    with open(fdir + fname + ".pickle", "wb") as f:
                         pickle_dump(results, f, protocol=HIGHEST_PROTOCOL)

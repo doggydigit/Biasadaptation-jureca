@@ -24,7 +24,7 @@ if __name__ == '__main__':
             seeds = list(map(int, params[4].split(',')))
             print(seeds)
             scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=True,
-                        verbose=True, saving=False, g_lr=gl, seeds=seeds)
+                        verbose=True, saving=True, g_lr=gl, seeds=seeds)
         else:
             raise ValueError(jobs[0])
         sys.stdout.close()
