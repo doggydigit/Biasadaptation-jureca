@@ -4,6 +4,9 @@ scripts/matthias/jureca_logs/*
 scripts/matthias/__pycache__/*
 scripts/matthias/.cache*
 results/scan_train_xlr_wlr/individual/individual_seed/*
+results/scan_train_glr_bwlr/individual/individual_seed/*
+results/scan_train_blr_wlr/individual/individual_seed/*
+results/scan_train_bmr_lr/individual/individual_seed/*
 dist/*
 build/*
 .idea/*
