@@ -440,9 +440,8 @@ def get_dataloader(dataset, max_batch_size=10000):
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     return data_loader, nr_samples
-    
+
 
 if __name__ == '__main__':
     for ds in ["K49", "CIFAR100", "EMNIST_bymerge"]:
         get_all_data(dataset=ds)
-        

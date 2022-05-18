@@ -38,6 +38,9 @@ def save_best_params(traintype, dataset, network, root_dir="../../", verbose=Fal
     elif traintype == "g_bw":
         dirpath = root_dir + "results/scan_train_glr_bwlr/"
         l1, l2 = "glr", "wlr"
+    elif traintype == "g_xw":
+        dirpath = root_dir + "results/scan_train_glr_xwlr/"
+        l1, l2 = "glr", "wlr"
     elif traintype == "bg_w":
         dirpath = root_dir + "results/scan_train_bglr_wlr/"
         l1, l2 = "bglr", "wlr"
@@ -115,7 +118,8 @@ def save_all_best_params(root_dir="../../", verbose=False):
 
 def save_avbest_params(root_dir="../../", verbose=False):
     traintypes = ["b_w", "g_bw", "bg_w", "bmr"]
-    datasets = ["CIFAR100", "EMNIST_bymerge"]
+    # datasets = ["CIFAR100", "EMNIST_bymerge"]
+    datasets = ["K49"]
     # networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100], [500, 500, 500]]
     networks = [[100], [100, 100], [100, 100, 100]]
 
@@ -194,8 +198,8 @@ def save_avbest_params(root_dir="../../", verbose=False):
 def save_avbest_paramsk49(root_dir="../../", verbose=False):
     traintypes = ["b_w", "g_bw", "bg_w", "bmr"]
     datasets = ["K49"]
-    networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100], [500, 500, 500]]
-    # networks = [[100], [100, 100], [100, 100, 100]]
+    # networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100], [500, 500, 500]]
+    networks = [[100], [100, 100], [100, 100, 100]]
 
     subdirs = {"b_w": "scan_train_blr_wlr", "g_bw": "scan_train_glr_bwlr", "bg_w": "scan_train_bglr_wlr"}
     for tt in traintypes:
@@ -262,15 +266,15 @@ def save_avbest_paramsk49(root_dir="../../", verbose=False):
 
 
 def save_avbest_paramst2d(root_dir="../../", verbose=False):
-    traintypes = ["b_w", "g_bw", "bg_w", "bmr"]
-    datasets = ["K49"]
-    dataset = "K49"
-    networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100], [500, 500, 500]]
-    # networks = [[100], [100, 100], [100, 100, 100]]
+    traintypes = ["g_xw", "g_bw", "bmr", "bg_w"]
+    datasets = ["EMNIST_bymerge", "CIFAR100", "K49"]
+    # networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100], [500, 500, 500]]
+    networks = [[100], [100, 100], [100, 100, 100]]
 
-    subdirs = {"b_w": "scan_train_blr_wlr", "g_bw": "scan_train_glr_bwlr", "bg_w": "scan_train_bglr_wlr"}
+    subdirs = {"b_w": "scan_train_blr_wlr", "g_bw": "scan_train_glr_bwlr", "bg_w": "scan_train_bglr_wlr",
+               "g_xw": "scan_train_glr_xwlr"}
     for tt in traintypes:
-        if tt in ["b_w", "g_bw", "bg_w"]:
+        if tt in ["b_w", "g_bw", "bg_w", "g_xw"]:
             prog_name = subdirs[tt]
             load_dir = root_dir + "results/" + subdirs[tt] + "/"
             train_params = get_biaslearner_training_params(highseed=20)
@@ -279,16 +283,14 @@ def save_avbest_paramst2d(root_dir="../../", verbose=False):
 
             netstring = str([25, 25])
             if tt == "b_w":
-                dirpath = root_dir + "results/scan_train_blr_wlr/"
                 l1, l2 = "blr", "wlr"
             elif tt == "g_bw":
-                dirpath = root_dir + "results/scan_train_glr_bwlr/"
+                l1, l2 = "glr", "wlr"
+            elif tt == "g_xw":
                 l1, l2 = "glr", "wlr"
             elif tt == "bg_w":
-                dirpath = root_dir + "results/scan_train_bglr_wlr/"
                 l1, l2 = "bglr", "wlr"
             elif tt == "bmr":
-                dirpath = root_dir + "results/scan_train_bmr_lr/"
                 l1, l2 = "rlr", "lr"
             else:
                 raise ValueError(tt)
@@ -297,7 +299,6 @@ def save_avbest_paramst2d(root_dir="../../", verbose=False):
         elif tt == "bmr":
             prog_name = "scan_train_bmr_lr"
             load_dir = root_dir + "results/scan_train_bmr_lr/"
-            dirpath = root_dir + "results/scan_train_bmr_lr/"
             l1, l2 = "rlr", "lr"
             train_params = get_binarymr_training_params(highseed=20)
             # lrs1 = [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
@@ -312,7 +313,7 @@ def save_avbest_paramst2d(root_dir="../../", verbose=False):
             bestlr1 = 0.
             bestlr2 = 0.
             # Load all parameter sets simulated
-            files = listdir(dirpath + "individual/")
+            files = listdir(load_dir + "individual/")
             files = [f for f in files if netstring in f and d in f]
             params = [[float(search("{}_(.*?).pickle".format(l1), f).group(1)),
                        float(search("{}_(.*?)_{}".format(l2, l1), f).group(1))] for f in files]
@@ -330,6 +331,11 @@ def save_avbest_paramst2d(root_dir="../../", verbose=False):
                     bestlr2 = lrs[1]
                     best_avperf = avperf
             print(prog_name, d, bestlr1, bestlr2, best_avperf)
+            filepath = load_dir + "bestparams.pickle"
+            # save_best_param(filepath, d, str(n), bestlr)
+            #
+            # if verbose:
+            #     print("sg", d, n, bestlr, max(mean_perfs))
 
             # # Update the current set of all best parameters (if exists)
             # filepath = dirpath + "bestparams.pickle"
@@ -444,7 +450,7 @@ def scan_train_glr_xwlr(prog_params, train_params, save_params, g_lr, lrs=None, 
     # Some initializations
     prog_params["name"] = "scan_train_x_w_lrs"
     prog_params["model_type"] = "xshiftlearner"
-    prog_params["training_type"] = "train_x_w"
+    prog_params["training_type"] = "train_g_xw"
     prog_params["model_getter_type"] = "random_xshiftlearner"
     prog_params["model_arg"] = {"nr_hidden": prog_params["nr_hidden"],
                                 "nr_tasks": get_number_classes(prog_params["dataset"])}
@@ -845,8 +851,8 @@ if __name__ == '__main__':
         #             verbose=True, testclasses=tcs, saving=False)
         # scan_params(scantype="train_sg_bigbatch", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
         #             verbose=True, testclasses=tcs, saving=False, batch_sizes=[4096], nr_epochs=[1000])
-        scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
-                    verbose=True, testclasses=tcs, saving=False, g_lr=bl)
+        # scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
+        #             verbose=True, testclasses=tcs, saving=False, g_lr=bl)
         # scan_params(scantype="train_g_bw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
         #             verbose=True, testclasses=tcs, saving=False, g_lr=bl)
         # scan_params(scantype="train_bg_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
@@ -865,9 +871,9 @@ if __name__ == '__main__':
         # save_best_params("b_w", "K49", str([100]), verbose=True)
         # save_avbest_params()
         # save_avbest_paramsk49()
-        # save_avbest_paramst2d()
-        # traintypes = ["b_w", "g_bw", "bg_w", "bmr"]
-        # datasets = ["K49"]
+        save_avbest_paramst2d()
+        # traintypes = ["g_xw"]
+        # datasets = ["EMNIST_bymerge", "CIFAR100", "K49"]
         # networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100],
         #             [500, 500, 500]]
         # for tt in traintypes:

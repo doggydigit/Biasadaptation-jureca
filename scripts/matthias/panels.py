@@ -99,14 +99,16 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
         nr_hiddens = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100],
                       [500, 500, 500]]
     # nr_hiddens = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [500, 500, 500]]
-    param_names = {"scan_train_blr_wlr": "Bias", "scan_train_glr_bwlr": "Gain", "scan_train_bglr_wlr": "Bias+Gain",
+    param_names = {"scan_train_blr_wlr": "Bias", "scan_train_glr_bwlr": "Gain",
+                   "scan_train_glr_xwlr": "Gain (with xshift)", "scan_train_bglr_wlr": "Bias+Gain",
                    "scan_train_bmr_lr": "Readout"}
     train_names = {"scan_train_blr_wlr": "train_b_w", "scan_train_glr_bwlr": "train_g_bw",
+                   "scan_train_glr_xwlr": "train_g_xw",
                    "scan_train_bglr_wlr": "train_bg_w", "scan_train_bmr_lr": "train_binarymr"}
     l2, l1 = get_best_params(train_names[prog_name], dataset=dataset)
     allchoice = [l1, l2]
     title = "Task-specific {} Modulation for {}".format(param_names[prog_name], dataset)
-    if prog_name in ["scan_train_blr_wlr", "scan_train_glr_bwlr", "scan_train_bglr_wlr"]:
+    if prog_name in ["scan_train_blr_wlr", "scan_train_glr_bwlr", "scan_train_glr_xwlr", "scan_train_bglr_wlr"]:
         subdir = prog_name
         # lrs1 = [0.1, 0.03, 0.01, 0.003, 0.002, 0.001, 0.0006, 0.0003, 0.0001, 0.00003]
         # lrs2 = [0.5, 0.3, 0.2, 0.1, 0.06, 0.03, 0.01, 0.003, 0.001, 0.0003]
@@ -114,8 +116,11 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
         # 0.00003]
         # lrs1 = [0.1, 0.03, 0.01, 0.003, 0.002, 0.001, 0.0006, 0.0003, 0.0002, 0.0001, 0.00006, 0.00003, 0.00002,
         # 0.00001]
-        if dataset in ["TASKS2D", "K49"]:
-            if dataset == "K49":
+        if (dataset in ["TASKS2D", "K49"]) or prog_name in ["scan_train_glr_xwlr"]:
+            if dataset in ["TASKS2D"]:
+                lrs1 = [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]
+                lrs2 = [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]
+            else:
                 lrs1 = None
                 lrs2 = None
                 netstring = str([25, 25])
@@ -123,7 +128,7 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
                 files = [f for f in files if netstring in f and dataset in f]
                 if prog_name == "scan_train_blr_wlr":
                     l1, l2 = "blr", "wlr"
-                elif prog_name == "scan_train_glr_bwlr":
+                elif prog_name in ["scan_train_glr_bwlr", "scan_train_glr_xwlr"]:
                     l1, l2 = "glr", "wlr"
                 elif prog_name == "scan_train_bglr_wlr":
                     l1, l2 = "bglr", "wlr"
@@ -133,14 +138,12 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
                     raise ValueError(prog_name)
                 lrparams = [[float(search("{}_(.*?).pickle".format(l1), f).group(1)),
                              float(search("{}_(.*?)_{}".format(l2, l1), f).group(1))] for f in files]
-            else:
-                lrs1 = [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]
-                lrs2 = [0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1]
         else:
             lrs1 = [0.03, 0.01, 0.003, 0.002, 0.001, 0.0006, 0.0003, 0.0002, 0.0001, 0.00006, 0.00003, 0.00002, 0.00001,
                     0.000006, 0.000003]
             lrs2 = [0.3, 0.2, 0.1, 0.06, 0.03, 0.02, 0.01, 0.006, 0.003, 0.002, 0.001, 0.0006, 0.0003, 0.0001, 0.00003]
             lrparams = None
+        print(lrparams)
         train_params = get_biaslearner_training_params(highseed=20)
         lr1_name = "lr"
         lr2_name = "b_lr"
@@ -177,7 +180,7 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
     elif prog_name == "scan_train_bmr_lr":
         subdir = "scan_train_bmr_lr"
         l1, l2 = "rlr", "lr"
-        if dataset in ["TASKS2D", "K49"]:
+        if dataset in ["TASKS2D", "K49"] or prog_name in ["scan_train_glr_xwlr"]:
             lrs1 = None
             lrs2 = None
             netstring = str([25, 25])
@@ -233,7 +236,7 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
         lrs1s = []
         lrs2s = []
         valperfs = []
-        if dataset == "K49":
+        if dataset in ["K49"] or prog_name in ["scan_train_glr_xwlr"]:
             for lrs in lrparams:
                 lrs1s += [lrs[1]]
                 lrs2s += [lrs[0]]
@@ -258,7 +261,7 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
                     valperfs += [max(torch_mean(performances).item(), 50.)]
                     ys += [torch_mean(performances)]
         z = np.array(valperfs)
-        cntr = axs[row, col].tricontourf(lrs1s, lrs2s, z, v, cmap="RdBu_r")
+        cntr = axs[row, col].tricontourf(lrs1s, lrs2s, z, v, cmap="RdBu_r", extend="both")
         axs[row, col].plot(lrs1s, lrs2s, 'ko', ms=1)
         choice = bestparams[str(nr_hiddens[nh])]
         if debug:
@@ -728,8 +731,8 @@ if __name__ == '__main__':
 
     # 2D Scans
     debug = False
-    # for ds in ["EMNIST_bymerge", "CIFAR100"]:
-    for ds in ["K49"]:
+    for ds in ["EMNIST_bymerge", "CIFAR100"]:
+    # for ds in ["K49"]:
         plot_2d_scan("scan_train_blr_wlr", dataset=ds, saving=save, debug=debug)
         plot_2d_scan("scan_train_glr_bwlr", dataset=ds, saving=save, debug=debug)
         plot_2d_scan("scan_train_bglr_wlr", dataset=ds, saving=save, debug=debug)
@@ -739,3 +742,5 @@ if __name__ == '__main__':
     # plot_2d_scan("scan_train_glr_bwlr", dataset="EMNIST_bymerge", saving=save, debug=debug)
     # plot_2d_scan("scan_train_bglr_wlr", dataset="CIFAR100", saving=save, debug=debug)
     # plot_2d_scan("scan_train_blr_wlr", dataset="TASKS2D", saving=save, debug=debug)
+    # for ds in ["EMNIST_bymerge", "CIFAR100", "K49"]:
+    #     plot_2d_scan("scan_train_glr_xwlr", dataset=ds, saving=save, debug=debug)

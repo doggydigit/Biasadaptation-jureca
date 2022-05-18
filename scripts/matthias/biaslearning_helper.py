@@ -14,8 +14,8 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
     if architecture_specific:
         if traintype == "train_b_w":
             prog_name = "scan_train_blr_wlr"
-        elif traintype == "train_x_w":
-            prog_name = "scan_train_xlr_wlr"
+        elif traintype == "train_g_xw":
+            prog_name = "scan_train_glr_xwlr"
         elif traintype == "train_g_bw":
             prog_name = "scan_train_glr_bwlr"
         elif traintype == "train_bg_w":
@@ -32,8 +32,8 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
         if dataset == "EMNIST_bymerge":
             if traintype == "train_b_w":
                 return 0.02, 0.001
-            elif traintype == "train_x_w":
-                return NotImplementedError
+            elif traintype == "train_g_xw":
+                return 0.01, 0.001
             elif traintype == "train_g_bw":
                 return 0.06, 0.00006
             elif traintype == "train_bg_w":
@@ -48,14 +48,14 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
         elif dataset == "CIFAR100":
             if traintype == "train_b_w":
                 return 0.02, 0.00006
-            elif traintype == "train_x_w":
-                return NotImplementedError
+            elif traintype == "train_g_xw":
+                return 0.1, 0.00003
             elif traintype == "train_g_bw":
                 return 0.02, 0.00001
             elif traintype == "train_bg_w":
-                return 0.02, 0.00002
+                return 0.006, 0.000006
             elif traintype == "train_binarymr":
-                return 0.002, 0.00006
+                return 0.002, 0.00003
             elif traintype == "train_bw":
                 return 0.000006
             else:
@@ -64,14 +64,14 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
         elif dataset == "K49":
             if traintype == "train_b_w":
                 return 0.03, 0.001
-            elif traintype == "train_x_w":
-                return NotImplementedError
+            elif traintype == "train_g_xw":
+                return 0.03, 0.0003
             elif traintype == "train_g_bw":
                 return 0.1, 0.00006
             elif traintype == "train_bg_w":
-                return 0.01, 0.0003
+                return 0.01, 0.001
             elif traintype == "train_binarymr":
-                return 0.01, 0.0001
+                return 0.006, 0.0002
             elif traintype == "train_bw":
                 return 0.006
             else:
@@ -221,7 +221,7 @@ def train_bw(model, loss_f, train_params, evaluate_training, data, validation_da
     )
 
 
-def train_x_w(model, loss_f, train_params, evaluate_training, data, validation_data=None, verbose=False):
+def train_g_xw(model, loss_f, train_params, evaluate_training, data, validation_data=None, verbose=False):
     from train_helper import train_epochs
     optimizer = Adam([{"params": model.ws}, {"params": model.xs},
                       {"params": model.gs, "lr": train_params["g_lr"]}],

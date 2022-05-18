@@ -1226,7 +1226,7 @@ if __name__ == '__main__':
     # plot_2d_tasks(saving=False)
     # plot_best_2d_lr_tasks2d("scan_train_blr_wlr")
     # plot_best_2d_lr_tasks2d("scan_train_bmr_lr")
-    # plot_scan_lr_2d("train_b_w", early_stopping=True)
+    plot_scan_lr_2d("train_b_w", early_stopping=True)
     # plot_scan_lr_2d("train_bmr", early_stopping=True)
     # plot_2d_model_output(saving=True, debug=False)
     # plot_asym()
@@ -1237,9 +1237,9 @@ if __name__ == '__main__':
     # plot_dataset_examples_spec("EMNIST_bymerge", task=9)
     # plot_dataset_examples_multiclass("EMNIST_bymerge")
 
-    plt.style.use("seaborn-colorblind")
-    for i in range(10):
-        p = plt.plot([0, 1, 2, 3], 4 * [i], linewidth=9)
-        print(p[0].get_color())
-
-    plt.show()
+    # plt.style.use("seaborn-colorblind")
+    # for i in range(10):
+    #     p = plt.plot([0, 1, 2, 3], 4 * [i], linewidth=9)
+    #     print(p[0].get_color())
+    #
+    # plt.show()

@@ -79,14 +79,14 @@ def get_performances(prog_name, load_info, nr_hidden, dataset, train_params, per
             result = pickle_load(f)
             performances = result[performance_type]
 
-    elif prog_name in ["scan_train_blr_wlr", "scan_train_glr_bwlr", "scan_train_bglr_wlr"]:
+    elif prog_name in ["scan_train_blr_wlr", "scan_train_glr_bwlr", "scan_train_bglr_wlr", "scan_train_glr_xwlr"]:
         if train_params["early_stopping"]:
             es = "_es"
         else:
             es = ""
         if prog_name == "scan_train_blr_wlr":
             pathbase = load_info + "individual/network_{}_{}_{}_{}{}_wlr_{}_blr_{}.pickle"
-        elif prog_name == "scan_train_glr_bwlr":
+        elif prog_name in ["scan_train_glr_bwlr", "scan_train_glr_xwlr"]:
             pathbase = load_info + "individual/network_{}_{}_{}_{}{}_wlr_{}_glr_{}.pickle"
         elif prog_name == "scan_train_bglr_wlr":
             pathbase = load_info + "individual/network_{}_{}_{}_{}{}_wlr_{}_bglr_{}.pickle"
