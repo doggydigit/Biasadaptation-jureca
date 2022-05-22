@@ -5,9 +5,9 @@ from pickle import load as pickle_load
 
 def bind_job(ns, ds, ls, gls, p0):
     dirdict = {"scan_train_g_xw": "scan_train_xlr_wlr", "scan_train_b_w": "scan_train_blr_wlr",
-               "scan_train_g_bw": "scan_train_glr_bwlr", "scan_train_bmr": "scan_train_bmr_lr"}
-    lr1dict = {"scan_train_g_xw": "wlr", "scan_train_b_w": "wlr", "scan_train_g_bw": "wlr", "scan_train_bmr": "lr"}
-    lr2dict = {"scan_train_g_xw": "glr", "scan_train_b_w": "blr", "scan_train_g_bw": "glr", "scan_train_bmr": "rlr"}
+               "scan_train_g_bw": "scan_train_glr_bwlr", "scan_train_bmr": "scan_train_bmr_lr", "scan_train_bg_w": "scan_train_bglr_wlr"}
+    lr1dict = {"scan_train_g_xw": "wlr", "scan_train_b_w": "wlr", "scan_train_g_bw": "wlr", "scan_train_bmr": "lr", "scan_train_bg_w": "wlr"}
+    lr2dict = {"scan_train_g_xw": "glr", "scan_train_b_w": "blr", "scan_train_g_bw": "glr", "scan_train_bmr": "rlr", "scan_train_bg_w": "bglr"}
     lr1 = lr1dict[p0]
     lr2 = lr2dict[p0]
     if p0 in dirdict.keys():
@@ -46,54 +46,22 @@ if __name__ == '__main__':
     #        "CIFAR100": ["0.06", "0.03", "0.02", "0.01", "0.006"]}
     # p0 = "scan_train_xlr_wlr"
     # bind_job(ns, ds, ls, gls, p0)
+    
 
     ds = ["K49", "EMNIST_bymerge", "CIFAR100"]
-    ls = {"K49": ["0.001"],
-          "EMNIST_bymerge": ["0.001"],
-          "CIFAR100": ["0.03", "0.01", "0.003", "0.001", "0.0003", "0.0001"]}
-    gls = {"K49": ["0.3", "0.2", "0.06", "0.03", "0.02"],
-           "EMNIST_bymerge": ["0.3", "0.2", "0.06", "0.03", "0.02"],
-           "CIFAR100": ["0.3", "0.1", "0.03", "0.01"]}
-    p0 = "scan_train_g_xw"
+    tts = ["train_b_w", "train_g_bw", "train_g_xw", "train_bmr", "train_bg_w"]
+    p0 = "train_full"
+
+    ds = ["CIFAR100"]
+    ls = {"CIFAR100": ["0.000002"]}
+    gls = {"CIFAR100": ["0.3", "0.1", "0.03", "0.02", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0001", "0.00003"]}
+    p0 = "scan_train_bg_w"
     bind_job(ns, ds, ls, gls, p0)
 
-    ds = ["K49"]
-    ls = {"K49": ["0.003", "0.0003"]}
-    gls = {"K49": ["0.00003"]}
-    p0 = "scan_train_b_w"
-    bind_job(ns, ds, ls, gls, p0)
-
-    ds = ["K49"]
-    ls = {"K49": ["0.03"]}
-    gls = {"K49": ["0.003", "0.0003", "0.00003"]}
-    p0 = "scan_train_b_w"
-    bind_job(ns, ds, ls, gls, p0)
-
-    ds = ["K49"]
-    ls = {"K49": ["0.00003"]}
-    gls = {"K49": ["0.003", "0.0003", "0.00003"]}
-    p0 = "scan_train_b_w"
-    bind_job(ns, ds, ls, gls, p0)
-
-    ds = ["K49"]
-    ls = {"K49": ["0.1", "0.01", "0.001", "0.00001", "0.000001"]}
-    gls = {"K49": ["0.3"]}
+    ds = ["CIFAR100"]
+    ls = {"CIFAR100": ["0.00002", "0.00001"],
+          "EMNIST_bymerge": ["0.00002"]}
+    gls = {"CIFAR100": ["0.1", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0006", "0.0001", "0.00003"],
+           "EMNIST_bymerge": ["0.1", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0001", "0.00003"]}
     p0 = "scan_train_bmr"
     bind_job(ns, ds, ls, gls, p0)
-
-    ds = ["K49"]
-    ls = {"K49": ["0.1", "0.01", "0.001", "0.00001", "0.000001"]}
-    gls = {"K49": ["0.3"]}
-    p0 = "scan_train_g_bw"
-    bind_job(ns, ds, ls, gls, p0)
-
-    ds = ["K49", "EMNIST_bymerge", "CIFAR100"]
-    ls = {"K49": ["0.003"],
-          "EMNIST_bymerge": ["0.003"],
-          "CIFAR100": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"]}
-    gls = {"K49": ["0.3", "0.03"],
-           "EMNIST_bymerge": ["0.3", "0.03"],
-           "CIFAR100": ["0.6"]}
-    p0 = "scan_train_g_xw"
-    bind_job(ns, ds, ls, gls, p0)
-

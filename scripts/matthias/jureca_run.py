@@ -41,21 +41,21 @@ if __name__ == '__main__':
                             verbose=True, saving=True, r_lr=cl, seeds=seeds)
             else:
                 raise ValueError(jobs[0])
-        elif len(params) == 3 and jobs[0] == "train_full":
+        elif len(params) == 3 and "train_full" in jobs[0]:
             rc = True
             vb = True
-            tt = str(params[2])
-            net = [list(map(int, params[1].split(',')))]
-            ds = [str(params[2])]
-            if tt == "train_b_w":
+            tt = str(params[0])
+            net = list(map(int, params[1].split(',')))
+            ds = str(params[2])[:-1]
+            if "train_b_w" in tt:
                 train_b_w_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
-            elif tt == "train_g_bw":
+            elif "train_g_bw" in tt:
                 train_g_bw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
-            elif tt == "train_g_xw":
+            elif "train_g_xw" in tt:
                 train_g_xw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
-            elif tt == "train_bg_w":
+            elif "train_bg_w" in tt:
                 train_bg_w_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
-            elif tt == "train_bmr":
+            elif "train_bmr" in tt:
                 train_binarymr_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
             else:
                 raise ValueError(jobs[0])
