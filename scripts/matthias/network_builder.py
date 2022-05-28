@@ -196,12 +196,14 @@ def get_model(prog_params, readout_function, input_size=784):
 
 
 def save_model(model, save_path, model_type):
-    from biaslearning_helper import save_biaslearner, save_bglearner
+    from biaslearning_helper import save_biaslearner, save_bglearner, save_xshiftlearner
     from multireadout_helper import save_multireadout
-    if model_type in ["biaslearner", "xshiftlearner"]:
+    if model_type in ["biaslearner"]:
         save_biaslearner(model, save_path)
     elif model_type in ["multireadout", "binarymr"]:
         save_multireadout(model, save_path)
+    elif model_type in ["xshiftlearner"]:
+        save_xshiftlearner(model, save_path)
     elif model_type in ["gainlearner", "bglearner"]:
         save_bglearner(model, save_path)
     else:
