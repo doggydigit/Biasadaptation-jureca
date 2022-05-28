@@ -322,7 +322,7 @@ def get_all_data(dataset, model_type="biaslearner", splitting=True, train=True, 
 
     data, totalnrclasses, traindigits = get_dataset_nrclasses_labels(dataset, root_dir, train)
 
-    if model_type in ["biaslearner", "binarymr", "gainlearner", "bglearner", "xshiftlearner"]:
+    if model_type in ["biaslearner", "binarymr", "gainlearner", "gainlearnerxb", "bglearner", "xshiftlearner"]:
         min_datasize = totalnrclasses * (totalnrclasses - 1)
         tasks = [{-1: {dataset: traindigits[:i] + traindigits[i + 1:totalnrclasses]},
                   1: {dataset: [traindigits[i]]}} for i in range(totalnrclasses)]

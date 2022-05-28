@@ -147,6 +147,23 @@ def save_bglearner(model, save_path):
         pickle_dump((np_ws, np_bs, np_gs), handle, protocol=HIGHEST_PROTOCOL)
 
 
+def save_xshiftlearner(model, save_path):
+    np_ws = [w.detach().numpy() for w in model.ws]
+    np_xs = [x.detach().numpy() for x in model.xs]
+    np_gs = [g.detach().numpy() for g in model.gs]
+    with open(save_path, 'wb') as handle:
+        pickle_dump((np_ws, np_xs, np_gs), handle, protocol=HIGHEST_PROTOCOL)
+
+
+def save_gainlearnerxb(model, save_path):
+    np_ws = [w.detach().numpy() for w in model.ws]
+    np_bs = [b.detach().numpy() for b in model.bs]
+    np_xs = [x.detach().numpy() for x in model.xs]
+    np_gs = [g.detach().numpy() for g in model.gs]
+    with open(save_path, 'wb') as handle:
+        pickle_dump((np_ws, np_bs, np_xs, np_gs), handle, protocol=HIGHEST_PROTOCOL)
+
+
 def get_pmdd_loss(data, weights, nsamples=1000):
     diffdata = differences_numpy(data, nsamples)
     coder = SparseCoder(weights, transform_algorithm='lasso_lars', transform_alpha=0.)
@@ -224,6 +241,17 @@ def train_bw(model, loss_f, train_params, evaluate_training, data, validation_da
 def train_g_xw(model, loss_f, train_params, evaluate_training, data, validation_data=None, verbose=False):
     from train_helper import train_epochs
     optimizer = Adam([{"params": model.ws}, {"params": model.xs},
+                      {"params": model.gs, "lr": train_params["g_lr"]}],
+                     train_params["lr"])
+    return train_epochs(
+        data=data, validation_data=validation_data, model_type="biaslearner", model=model, optimizer=optimizer,
+        parameters=None, loss_f=loss_f, train_params=train_params, evaluate_training=evaluate_training, verbose=verbose
+    )
+
+
+def train_g_bxw(model, loss_f, train_params, evaluate_training, data, validation_data=None, verbose=False):
+    from train_helper import train_epochs
+    optimizer = Adam([{"params": model.ws}, {"params": model.xs}, {"params": model.bs},
                       {"params": model.gs, "lr": train_params["g_lr"]}],
                      train_params["lr"])
     return train_epochs(

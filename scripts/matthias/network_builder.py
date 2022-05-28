@@ -3,7 +3,7 @@ from numpy import load as np_load
 from numpy import transpose as np_transpose
 from numpy import exp as npexp
 from numpy.random import randn as np_randn
-from biasadaptation.biasfit import biasfit, bgfit, gfit, xshiftfit
+from biasadaptation.biasfit import biasfit, bgfit, gfit, gfit_xb, xshiftfit
 from multireadout_helper import MultiReadout
 
 
@@ -20,6 +20,15 @@ def create_random_xshiftlearner(nr_hidden_neurons, nr_tasks, readout="linear", i
     xs = [np_randn(nr_neurons[i]) / nr_neurons[i] for i in range(1, len(nr_neurons))]
     gs = [npexp(np_randn(nr_tasks, nr_neurons[i])) for i in range(1, len(nr_neurons))]
     return xshiftfit.ReLuFit(ws, xs, gs, True, readout=readout)
+
+
+def create_random_gainlearnerxb(nr_hidden_neurons, nr_tasks, readout="linear", input_size=784):
+    nr_neurons = [input_size] + nr_hidden_neurons + [1]
+    ws = [np_randn(nr_neurons[i], nr_neurons[i+1]) / nr_neurons[i] for i in range(len(nr_neurons)-1)]
+    bs = [np_randn(nr_neurons[i]) / nr_neurons[i] for i in range(1, len(nr_neurons))]
+    xs = [np_randn(nr_neurons[i]) / nr_neurons[i] for i in range(1, len(nr_neurons))]
+    gs = [npexp(np_randn(nr_tasks, nr_neurons[i])) for i in range(1, len(nr_neurons))]
+    return gfit_xb.ReLuFit(ws, bs, xs, gs, True, readout=readout)
 
 
 def load_biaslearner_with_random_biases(nr_hidden, readout, weight_path, nr_tasks=1, input_size=784):
@@ -142,6 +151,11 @@ def get_model(prog_params, readout_function, input_size=784):
         model = create_random_gainlearner(nr_hidden_neurons=arg["nr_hidden"], nr_tasks=arg["nr_tasks"],
                                           readout=readout_function, input_size=input_size)
 
+    # Completely new gain learner from scratch
+    elif prog_params["model_getter_type"] == "random_gainlearnerxb":
+        model = create_random_gainlearnerxb(nr_hidden_neurons=arg["nr_hidden"], nr_tasks=arg["nr_tasks"],
+                                            readout=readout_function, input_size=input_size)
+
     # Completely new bias adn gain learner from scratch
     elif prog_params["model_getter_type"] == "random_bglearner":
         model = create_random_bglearner(nr_hidden_neurons=arg["nr_hidden"], nr_tasks=arg["nr_tasks"],
@@ -196,7 +210,7 @@ def get_model(prog_params, readout_function, input_size=784):
 
 
 def save_model(model, save_path, model_type):
-    from biaslearning_helper import save_biaslearner, save_bglearner, save_xshiftlearner
+    from biaslearning_helper import save_biaslearner, save_bglearner, save_xshiftlearner, save_gainlearnerxb
     from multireadout_helper import save_multireadout
     if model_type in ["biaslearner"]:
         save_biaslearner(model, save_path)
@@ -204,6 +218,8 @@ def save_model(model, save_path, model_type):
         save_multireadout(model, save_path)
     elif model_type in ["xshiftlearner"]:
         save_xshiftlearner(model, save_path)
+    elif model_type in ["gainlearnerxb"]:
+        save_gainlearnerxb(model, save_path)
     elif model_type in ["gainlearner", "bglearner"]:
         save_bglearner(model, save_path)
     else:

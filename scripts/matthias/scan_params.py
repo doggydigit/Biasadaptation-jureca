@@ -516,6 +516,42 @@ def scan_train_glr_bwlr(prog_params, train_params, save_params, g_lr, lrs=None, 
                              verbose=verbose)
 
 
+def scan_train_glr_bxwlr(prog_params, train_params, save_params, g_lr, lrs=None, verbose=False, debug=False,
+                        root_dir="../../"):
+
+    # Some initializations
+    prog_params["name"] = "scan_train_g_bxw_lrs"
+    prog_params["model_type"] = "gainlearnerxb"
+    prog_params["training_type"] = "train_g_bxw"
+    prog_params["model_getter_type"] = "random_gainlearnerxb"
+    prog_params["model_arg"] = {"nr_hidden": prog_params["nr_hidden"],
+                                "nr_tasks": get_number_classes(prog_params["dataset"])}
+
+    result_dir = root_dir + "results/scan_train_glr_bwlr/individual/"
+
+    # Prepare simulations
+    train_params["g_lr"] = g_lr
+    prog_params, lrs, spes_add, save_params = prepare_scan_simulation(
+        prog_params, train_params["early_stopping"], save_params, lrs, debug
+    )
+
+    # Get training and validation data
+    train_data, validation_data = get_all_data(dataset=prog_params["dataset"], model_type=prog_params["model_type"],
+                                               debug=debug)
+
+    # Try the different learning rates with the desired training conditions
+    for lr in lrs:
+        train_params["lr"] = lr
+        save_params["save_name"] = "network_{}_{}_{}_{}{}_wlr_{}_glr_{}".format(
+            prog_params["nr_hidden"], prog_params["dataset"], train_params["loss_function"],
+            train_params["readout_function"], spes_add, lr, train_params["g_lr"]
+        )
+
+        get_train_eval_model(result_dir=result_dir, prog_params=prog_params, save_params=save_params,
+                             train_params=train_params, train_data=train_data, validation_data=validation_data,
+                             verbose=verbose)
+
+
 def scan_train_bglr_wlr(prog_params, train_params, save_params, bg_lr, lrs=None, verbose=False, debug=False,
                         root_dir="../../"):
 
@@ -726,7 +762,7 @@ def scan_params(scantype, nrhiddens, readout_functions=None, datasets=None, lrs=
                 loss_functions=None, early_stopping=None, seeds=None, highseed=None, recompute=False, saving=True,
                 verbose=False, debug=False, root_dir="../../", testclasses=None, b_lr=None, g_lr=None, bg_lr=None,
                 r_lr=None):
-    assert scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_bg_w", "train_sg",
+    assert scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_g_bxw", "train_bg_w", "train_sg",
                         "train_sg_bigbatch", "train_mr", "train_bmr", "transfer_b_l1o", "transfer_mr_l1o",
                         "transfer_bmr_l1o"]
     if datasets is None:
@@ -742,7 +778,8 @@ def scan_params(scantype, nrhiddens, readout_functions=None, datasets=None, lrs=
     else:
         early_stoppings = [early_stopping]
     if highseed is None:
-        if scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_bg_w", "train_mr", "train_bmr"]:
+        if scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_g_bxw", "train_bg_w", "train_mr",
+                        "train_bmr"]:
             highseed = 20
         elif scantype in ["transfer_b_l1o", "transfer_mr_l1o", "transfer_bmr_l1o", "train_sg", "train_sg_bigbatch"]:
             highseed = 3
@@ -750,8 +787,8 @@ def scan_params(scantype, nrhiddens, readout_functions=None, datasets=None, lrs=
         else:
             raise ValueError(scantype)
     if readout_functions is None:
-        if scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_bg_w", "transfer_b_l1o", "train_sg",
-                        "train_sg_bigbatch", "train_bmr", "transfer_bmr_l1o"]:
+        if scantype in ["train_bw", "train_b_w", "train_g_xw", "train_g_bw", "train_g_bxw", "train_bg_w",
+                        "transfer_b_l1o", "train_sg", "train_sg_bigbatch", "train_bmr", "transfer_bmr_l1o"]:
             readout_functions = ["tanh"]
         elif scantype in ["train_mr", "transfer_mr_l1o"]:
             readout_functions = ["softmax"]
@@ -762,7 +799,9 @@ def scan_params(scantype, nrhiddens, readout_functions=None, datasets=None, lrs=
         prog_params = {}
     else:
         prog_params = {"test_classes": testclasses}
-    train_params = {"highseed": highseed, "seeds": seeds}
+    train_params = {"highseed": highseed}
+    if seeds is not None:
+        train_params["seeds"] = seeds
     save_params = {"save_performance": saving,
                    "save_initweights": False,
                    "save_finalweights": False,
@@ -797,6 +836,10 @@ def scan_params(scantype, nrhiddens, readout_functions=None, datasets=None, lrs=
                                     scan_train_glr_bwlr(prog_params=prog_params, train_params=train_params,
                                                         save_params=save_params, lrs=lrs, verbose=verbose, debug=debug,
                                                         root_dir=root_dir, g_lr=g_lr)
+                                elif scantype == "train_g_bxw":
+                                    scan_train_glr_bxwlr(prog_params=prog_params, train_params=train_params,
+                                                         save_params=save_params, lrs=lrs, verbose=verbose, debug=debug,
+                                                         root_dir=root_dir, g_lr=g_lr)
                                 elif scantype == "train_bg_w":
                                     scan_train_bglr_wlr(prog_params=prog_params, train_params=train_params,
                                                         save_params=save_params, lrs=lrs, verbose=verbose, debug=debug,
@@ -855,6 +898,8 @@ if __name__ == '__main__':
         #             verbose=True, testclasses=tcs, saving=False, g_lr=bl)
         # scan_params(scantype="train_g_bw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
         #             verbose=True, testclasses=tcs, saving=False, g_lr=bl)
+        scan_params(scantype="train_g_bxw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
+                    verbose=True, testclasses=tcs, saving=False, g_lr=bl)
         # scan_params(scantype="train_bg_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
         #             verbose=True, testclasses=tcs, saving=False, bg_lr=bl, debug=False)
         # scan_params(scantype="transfer_b_l1o", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
@@ -871,7 +916,7 @@ if __name__ == '__main__':
         # save_best_params("b_w", "K49", str([100]), verbose=True)
         # save_avbest_params()
         # save_avbest_paramsk49()
-        save_avbest_paramst2d()
+        # save_avbest_paramst2d()
         # traintypes = ["g_xw"]
         # datasets = ["EMNIST_bymerge", "CIFAR100", "K49"]
         # networks = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100],

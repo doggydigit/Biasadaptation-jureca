@@ -40,6 +40,7 @@ def write_train_job(tts, ns, ds, p0, job=0, proc=0):
                     proc = 0
                     job_text = p0
                 else:
+
                     proc += 1
     if not proc == 0:
         f = open("jureca_jobs/job_{}.txt".format(job), "w")
@@ -52,27 +53,23 @@ def write_train_job(tts, ns, ds, p0, job=0, proc=0):
 
 if __name__ == '__main__':
     ns = ["500,500,500", "100,100,100", "25,25,25", "500,500", "100,100", "25,25", "500", "100", "25"]
-    job = 0
+    job = 76
 
     ds = ["K49", "EMNIST_bymerge", "CIFAR100"]
     tts = ["train_b_w", "train_g_bw", "train_g_xw", "train_bmr", "train_bg_w"]
     p0 = "train_full"
     job = write_train_job(tts=tts, ns=ns, ds=ds, p0=p0, job=job)
 
-    ns = ["500,500,500", "100,100,100", "25,25,25", "500,500", "100,100", "25,25", "500", "100", "25"]
-    ds = ["CIFAR100"]
-    ls = {"CIFAR100": ["0.000002"]}
-    gls = {"CIFAR100": ["0.3", "0.1", "0.03", "0.02", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0001", "0.00003"]}
-    p0 = "scan_train_bg_w"
-    job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
-
-    ds = ["CIFAR100"]
-    ls = {"CIFAR100": ["0.00002", "0.00001"],
-          "EMNIST_bymerge": ["0.00002"]}
-    gls = {"CIFAR100": ["0.1", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0006", "0.0001", "0.00003"],
-           "EMNIST_bymerge": ["0.1", "0.01", "0.006", "0.003", "0.002", "0.001", "0.0001", "0.00003"]}
-    p0 = "scan_train_bmr"
-    job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
+    # ns = ["500,500,500", "100,100,100", "25,25,25", "500,500", "100,100", "25,25", "500", "100", "25"]
+    # ds = ["K49", "EMNIST_bymerge", "CIFAR100"]
+    # ls = {"EMNIST_bymerge": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"],
+    #       "K49": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"],
+    #       "CIFAR100": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"]}
+    # gls = {"EMNIST_bymerge": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"],
+    #        "K49": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"],
+    #        "CIFAR100": ["0.1", "0.01", "0.001", "0.0001", "0.00001", "0.000001"]}
+    # p0 = "scan_train_g_bxw"
+    # job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
 
     # ds = ["K49", "EMNIST_bymerge", "CIFAR100"]
     # ls = {"K49": ["0.001"],
@@ -84,23 +81,3 @@ if __name__ == '__main__':
     # p0 = "scan_train_g_xw"
     # job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
     # print(job)
-
-    ns = ["500", "100", "25"]
-
-    ds = ["K49"]
-    ls = {"K49": ["0.003", "0.0003"]}
-    gls = {"K49": ["0.00003"]}
-    p0 = "scan_train_b_w"
-    job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
-
-    ds = ["K49"]
-    ls = {"K49": ["0.03"]}
-    gls = {"K49": ["0.003", "0.0003", "0.00003"]}
-    p0 = "scan_train_b_w"
-    job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)
-    print(job)
-    ds = ["K49"]
-    ls = {"K49": ["0.00003"]}
-    gls = {"K49": ["0.003", "0.0003", "0.00003"]}
-    p0 = "scan_train_b_w"
-    job = write_scan_job(ns=ns, ds=ds, ls=ls, gls=gls, p0=p0, job=job)

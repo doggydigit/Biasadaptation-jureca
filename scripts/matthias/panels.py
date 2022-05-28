@@ -311,6 +311,108 @@ def plot_2d_scan(prog_name="scan_train_blr_wlr", dataset="EMNIST_bymerge", savin
         plt.show()
 
 
+def plot_trainfull_valid(dataset="EMNIST_bymerge", saving=False, debug=False):
+    """
+    Plot
+    ----------
+    debug:
+    dataset:
+    saving: Whether to save the plot to file or just show it
+    """
+
+    # Process the types of network architectures to plot, to know the number of subplots to draw
+    nr_hiddens = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [100, 100, 100],
+                  [500, 500, 500]]
+    # nr_hiddens = [[25], [100], [500], [25, 25], [100, 100], [500, 500], [25, 25, 25], [500, 500, 500]]
+    tts = ["scan_train_bmr_lr", "scan_train_blr_wlr", "scan_train_glr_bwlr", "scan_train_glr_xwlr",
+           "scan_train_bglr_wlr"]
+    param_names = {"scan_train_blr_wlr": "Bias", "scan_train_glr_bwlr": "Gain",
+                   "scan_train_glr_xwlr": "Gain (with xshift)", "scan_train_bglr_wlr": "Bias+Gain",
+                   "scan_train_bmr_lr": "Readout"}
+    train_names = {"scan_train_blr_wlr": "train_b_w", "scan_train_glr_bwlr": "train_g_bw",
+                   "scan_train_glr_xwlr": "train_g_xw",
+                   "scan_train_bglr_wlr": "train_bg_w", "scan_train_bmr_lr": "train_binarymr"}
+    # if prog_name == "scan_train_blr_wlr":
+    #     l1, l2 = "blr", "wlr"
+    # elif prog_name in ["scan_train_glr_bwlr", "scan_train_glr_xwlr"]:
+    #     l1, l2 = "glr", "wlr"
+    # elif prog_name == "scan_train_bglr_wlr":
+    #     l1, l2 = "bglr", "wlr"
+    # elif prog_name == "bmr":
+    #     l1, l2 = "rlr", "lr"
+    # else:
+    #     raise ValueError(prog_name)
+    # l1, l2 = "rlr", "lr"
+
+    lr1names = {"scan_train_blr_wlr": "lr", "scan_train_glr_bwlr": "lr", "scan_train_glr_xwlr": "lr",
+                "scan_train_bglr_wlr": "lr", "scan_train_bmr_lr": "lr"}
+    lr2names = {"scan_train_blr_wlr": "b_lr", "scan_train_glr_bwlr": "b_lr", "scan_train_glr_xwlr": "b_lr",
+                "scan_train_bglr_wlr": "b_lr", "scan_train_bmr_lr": "r_lr"}
+    if dataset == "CIFAR100":
+        ymin, ymax = 74, 78
+    else:
+        ymin, ymax = 90, 98
+
+    hidden_layer_nrs, hidden_neuron_per_layer_nrs = get_hidden_layer_info(nr_hiddens=nr_hiddens)
+    fig, axs = plt.subplots(len(hidden_layer_nrs), len(hidden_neuron_per_layer_nrs))
+    row_ids = []
+    col_ids = []
+    for nr_hidden in nr_hiddens:
+        row_ids += [hidden_layer_nrs.index(len(nr_hidden))]
+        col_ids += [hidden_neuron_per_layer_nrs.index(nr_hidden[0])]
+    if debug:
+        v = np.linspace(50., 100., 51, endpoint=True)
+    else:
+        v = np.linspace(50., 100., 201, endpoint=True)
+
+    for nh in range(len(nr_hiddens)):
+        row = row_ids[nh]
+        col = col_ids[nh]
+        ys = []
+        valperfs = []
+        for tt in tts:
+            if tt == "scan_train_bmr_lr":
+                train_params = get_binarymr_training_params(highseed=20)
+            else:
+                train_params = get_biaslearner_training_params(highseed=20)
+            l2, l1 = get_best_params(train_names[tt], dataset=dataset)
+            train_params[lr1names[tt]] = l1
+            train_params[lr2names[tt]] = l2
+            load_dir, _ = get_dirs("../../", tt)
+            performances = get_performances(prog_name=tt, load_info=load_dir, nr_hidden=nr_hiddens[nh],
+                                            dataset=dataset, train_params=train_params,
+                                            performance_type="validation_performance")
+            valperfs += [max(torch_mean(performances).item(), 50.)]
+        axs[row, col].bar(list(range(len(tts))), valperfs)
+        axs[row, col].set_ylim([ymin, ymax])
+    plt.show()
+    return
+    # Plotting Specifics
+    axs[len(hidden_layer_nrs) - 1, 1].set_xlabel(xlab)
+    axs[1, 0].set_ylabel(ylab)
+    for col in range(len(hidden_neuron_per_layer_nrs)):
+        axs[-1, col].xaxis.set_ticklabels(majorxticklabels)
+        for row in range(len(hidden_layer_nrs) - 1):
+            axs[row, col].set_xticks([])
+            axs[row, col].set_xticks([], minor=True)
+    for row in range(len(hidden_layer_nrs)):
+        axs[row, 0].yaxis.set_ticklabels(majoryticklabels)
+        for col in range(1, len(hidden_neuron_per_layer_nrs)):
+            axs[row, col].set_yticks([])
+            axs[row, col].set_yticks([], minor=True)
+    # fig.set_size_inches(9, 9)
+    # fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.92, wspace=0.15, hspace=0.26)
+    fig.set_size_inches(6, 6)
+    fig.subplots_adjust(top=0.90, bottom=0.10, left=0.13, right=0.90, wspace=0.15, hspace=0.26)
+    plt.suptitle(title)
+
+    if saving:
+        plt.savefig("../../plots/scan_params/svg/{}_{}_performance_plot.svg".format(prog_name, dataset))
+        plt.savefig("../../plots/scan_params/{}_{}_performance_plot.png".format(prog_name, dataset))
+        plt.close()
+    else:
+        plt.show()
+
 def panel_s1a(saving=True, nrow=4, nrxdim=100):
     plot_2d_tasks(saving=saving, model=None, root_dir="../../", savename="Tasks48", nrow=nrow, nrxdim=nrxdim)
 
@@ -731,12 +833,12 @@ if __name__ == '__main__':
 
     # 2D Scans
     debug = False
-    for ds in ["EMNIST_bymerge", "CIFAR100"]:
+    # for ds in ["EMNIST_bymerge", "CIFAR100"]:
     # for ds in ["K49"]:
-        plot_2d_scan("scan_train_blr_wlr", dataset=ds, saving=save, debug=debug)
-        plot_2d_scan("scan_train_glr_bwlr", dataset=ds, saving=save, debug=debug)
-        plot_2d_scan("scan_train_bglr_wlr", dataset=ds, saving=save, debug=debug)
-        plot_2d_scan("scan_train_bmr_lr", dataset=ds, saving=save, debug=debug)
+    #     plot_2d_scan("scan_train_blr_wlr", dataset=ds, saving=save, debug=debug)
+    #     plot_2d_scan("scan_train_glr_bwlr", dataset=ds, saving=save, debug=debug)
+    #     plot_2d_scan("scan_train_bglr_wlr", dataset=ds, saving=save, debug=debug)
+    #     plot_2d_scan("scan_train_bmr_lr", dataset=ds, saving=save, debug=debug)
     # plot_scan_lr("train_sg", early_stopping=True, titling=False, saving=save)
 
     # plot_2d_scan("scan_train_glr_bwlr", dataset="EMNIST_bymerge", saving=save, debug=debug)
@@ -744,3 +846,4 @@ if __name__ == '__main__':
     # plot_2d_scan("scan_train_blr_wlr", dataset="TASKS2D", saving=save, debug=debug)
     # for ds in ["EMNIST_bymerge", "CIFAR100", "K49"]:
     #     plot_2d_scan("scan_train_glr_xwlr", dataset=ds, saving=save, debug=debug)
+    plot_trainfull_valid("K49")
