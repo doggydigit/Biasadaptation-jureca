@@ -99,7 +99,7 @@ def evaluate_performance_binarymr(model, data_loader, loss_f, nr_samples, task_i
 
 
 def evaluate_performance(model_type, model, data_loader, loss_f, nr_samples, task_id0=0):
-    if model_type in ["biaslearner", "gainlearner", "bglearner", "xshiftlearner"]:
+    if model_type in ["biaslearner", "gainlearner", "gainlearnerxb", "bglearner", "xshiftlearner"]:
         return evaluate_performance_biaslearner(model, data_loader, loss_f, nr_samples, task_id0=task_id0)
     elif model_type == "multireadout":
         return evaluate_performance_benchmarks(model, data_loader, loss_f, nr_samples)
