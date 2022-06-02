@@ -203,6 +203,18 @@ def train_g_xw_full_dataset(dataset, nrhidden, train_params=None, recompute=Fals
                                    verbose=verbose, veryverbose=veryverbose, debug=debug, root_dir=root_dir)
 
 
+def train_g_bxw_full_dataset(dataset, nrhidden, train_params=None, recompute=False, save_performance=True,
+                             save_initweights=True, save_finalweights=True, verbose=False, veryverbose=False,
+                             debug=False, root_dir="../../"):
+    prog_params = {"model_type": "gainlearnerxb",
+                   "model_type_save_name": "gainlearnerxb",
+                   "model_getter_type": "random_gainlearnerxb"}
+    train_biaslearner_full_dataset(dataset=dataset, nrhidden=nrhidden, prog_params=prog_params, train_type="train_g_bxw",
+                                   train_params=train_params, recompute=recompute, save_performance=save_performance,
+                                   save_initweights=save_initweights, save_finalweights=save_finalweights,
+                                   verbose=verbose, veryverbose=veryverbose, debug=debug, root_dir=root_dir)
+
+
 def train_bg_w_full_dataset(dataset, nrhidden, train_params=None, recompute=False, save_performance=True,
                             save_initweights=True, save_finalweights=True, verbose=False, veryverbose=False,
                             debug=False, root_dir="../../"):
@@ -446,8 +458,10 @@ if __name__ == '__main__':
         #                        save_performance=False)
         # train_bg_w_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, veryverbose=vvb,
         #                         save_performance=False)
-        train_g_xw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, veryverbose=vvb,
-                                save_performance=False)
+        # train_g_xw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, veryverbose=vvb,
+        #                         save_performance=False)
+        train_g_bxw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, veryverbose=vvb,
+                                 save_performance=False)
         # train_g_bw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, veryverbose=vvb,
         #                         save_performance=False)
         # train_binarymr_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb, save_performance=False)

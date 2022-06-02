@@ -14,7 +14,7 @@ from biasadaptation.utils.losses import get_loss_function
 from data_helper import get_dataset, get_dataloader
 from network_builder import get_model, save_model
 from network_evaluator import evaluate_performance
-from biaslearning_helper import train_epoch_biaslearner, train_bw, train_b_w, train_g_xw
+from biaslearning_helper import train_epoch_biaslearner, train_bw, train_b_w, train_g_xw, train_g_bxw
 from biaslearning_helper import train_g_bw, train_bg_w, transfer_b
 from biaslearning_helper import get_pmdd_loss, train_b_w_deepen
 from multireadout_helper import train_epoch_multireadout, train_multireadout, transfer_multireadout
@@ -182,6 +182,11 @@ def train_model(training_type, model, loss_f, train_params, train_data, validati
     # Train weights and biases of the biaslearner network model with separate learning rates
     elif training_type == "train_g_xw":
         return train_g_xw(model=model, loss_f=loss_f, train_params=train_params, evaluate_training=evaluate_training,
+                          data=train_data, validation_data=validation_data, verbose=verbose)
+
+    # Train weights and biases of the biaslearner network model with separate learning rates
+    elif training_type == "train_g_bxw":
+        return train_g_bxw(model=model, loss_f=loss_f, train_params=train_params, evaluate_training=evaluate_training,
                           data=train_data, validation_data=validation_data, verbose=verbose)
 
     # Train weights, biases and task specific gains of the biaslearner network model with separate learning rates

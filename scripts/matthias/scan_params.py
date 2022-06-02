@@ -947,6 +947,14 @@ if __name__ == '__main__':
             gl = float(sys.argv[6])
             scan_params(scantype="train_g_bw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
                         verbose=True, g_lr=gl)
+        elif sys.argv[1] == "train_g_xw_lr":
+            gl = float(sys.argv[6])
+            scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
+                        verbose=True, g_lr=gl)
+        elif sys.argv[1] == "train_g_bxw_lr":
+            gl = float(sys.argv[6])
+            scan_params(scantype="train_g_bxw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,
+                        verbose=True, g_lr=gl)
         elif sys.argv[1] == "train_bg_w_lr":
             bgl = float(sys.argv[6])
             scan_params(scantype="train_bg_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=es, recompute=rc,

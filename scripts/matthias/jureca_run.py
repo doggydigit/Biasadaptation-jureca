@@ -2,7 +2,7 @@ import sys
 from mpi4py import MPI
 from scan_params import scan_params
 from train_full_dataset import train_b_w_full_dataset, train_g_bw_full_dataset, train_g_xw_full_dataset, \
-    train_bg_w_full_dataset, train_binarymr_full_dataset
+    train_g_bxw_full_dataset, train_bg_w_full_dataset, train_binarymr_full_dataset
 
 
 if __name__ == '__main__':
@@ -25,20 +25,23 @@ if __name__ == '__main__':
             print(seeds)
 
             if "scan_train_g_xw" in jobs[0]:
-                scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                            verbose=True, saving=True, g_lr=cl, seeds=seeds)
+                scan_params(scantype="train_g_xw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, g_lr=cl, seeds=seeds)
             elif "scan_train_g_bw" in jobs[0]:
-                scan_params(scantype="train_g_bw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                            verbose=True, saving=True, g_lr=cl, seeds=seeds)
+                scan_params(scantype="train_g_bw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, g_lr=cl, seeds=seeds)
+            elif "scan_train_g_bxw" in jobs[0]:
+                scan_params(scantype="train_g_bxw", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, g_lr=cl, seeds=seeds)
             elif "scan_train_b_w" in jobs[0]:
-                scan_params(scantype="train_b_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                            verbose=True, saving=True, b_lr=cl, seeds=seeds)
+                scan_params(scantype="train_b_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, b_lr=cl, seeds=seeds)
             elif "scan_train_bg_w" in jobs[0]:
-                scan_params(scantype="train_bg_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                            verbose=True, saving=True, bg_lr=cl, seeds=seeds)
+                scan_params(scantype="train_bg_w", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, bg_lr=cl, seeds=seeds)
             elif "scan_train_bmr" in jobs[0]:
-                scan_params(scantype="train_bmr", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True, recompute=False,
-                            verbose=True, saving=True, r_lr=cl, seeds=seeds)
+                scan_params(scantype="train_bmr", nrhiddens=net, datasets=ds, lrs=ls, early_stopping=True,
+                            recompute=False, verbose=True, saving=True, r_lr=cl, seeds=seeds)
             else:
                 raise ValueError(jobs[0])
         elif len(params) == 3 and "train_full" in jobs[0]:
@@ -53,6 +56,8 @@ if __name__ == '__main__':
                 train_g_bw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
             elif "train_g_xw" in tt:
                 train_g_xw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
+            elif "train_g_bxw" in tt:
+                train_g_bxw_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
             elif "train_bg_w" in tt:
                 train_bg_w_full_dataset(dataset=ds, nrhidden=net, recompute=rc, verbose=vb)
             elif "train_bmr" in tt:
@@ -65,5 +70,5 @@ if __name__ == '__main__':
     elif len(sys.argv) == 1:
         print(0)
     else:
-        raise ValueError(sys.argv)
+	raise ValueError(sys.argv)
 

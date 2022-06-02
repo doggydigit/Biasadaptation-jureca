@@ -36,6 +36,9 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
                 return 0.01, 0.001
             elif traintype == "train_g_bw":
                 return 0.06, 0.00006
+            elif traintype == "train_g_bxw":
+                raise NotImplementedError
+                return None, None
             elif traintype == "train_bg_w":
                 return 0.006, 0.0006
             elif traintype == "train_binarymr":
@@ -52,6 +55,9 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
                 return 0.1, 0.00003
             elif traintype == "train_g_bw":
                 return 0.02, 0.00001
+            elif traintype == "train_g_bxw":
+                raise NotImplementedError
+                return None, None
             elif traintype == "train_bg_w":
                 return 0.006, 0.000006
             elif traintype == "train_binarymr":
@@ -68,6 +74,9 @@ def get_best_params(traintype, dataset, network=None, architecture_specific=Fals
                 return 0.03, 0.0003
             elif traintype == "train_g_bw":
                 return 0.1, 0.00006
+            elif traintype == "train_g_bxw":
+                raise NotImplementedError
+                return None, None
             elif traintype == "train_bg_w":
                 return 0.01, 0.001
             elif traintype == "train_binarymr":
