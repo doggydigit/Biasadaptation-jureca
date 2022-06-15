@@ -8,6 +8,10 @@ results/scan_train_glr_bwlr/individual/individual_seed/*
 results/scan_train_blr_wlr/individual/individual_seed/*
 results/scan_train_bglr_wlr/individual/individual_seed/*
 results/scan_train_bmr_lr/individual/individual_seed/*
+results/train_full_dataset/*/final_weights/*
+results/train_full_dataset/*/init_weights/*
 dist/*
 build/*
 .idea/*
+
+results/scan_train_blr_wlr/individual_stash/*
