@@ -527,7 +527,7 @@ def scan_train_glr_bxwlr(prog_params, train_params, save_params, g_lr, lrs=None,
     prog_params["model_arg"] = {"nr_hidden": prog_params["nr_hidden"],
                                 "nr_tasks": get_number_classes(prog_params["dataset"])}
 
-    result_dir = root_dir + "results/scan_train_glr_bwlr/individual/"
+    result_dir = root_dir + "results/scan_train_glr_bxwlr/individual/"
 
     # Prepare simulations
     train_params["g_lr"] = g_lr

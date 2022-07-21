@@ -379,6 +379,7 @@ def prepare_simulation(result_dir, prog_params, train_params, save_params, verbo
             else:
                 print_1 = ""
             print("Training was already simulated with up to seed {}{}".format(load_results["highseed"], print_1))
+            print(save_params["result_path"])
             if load_results["highseed"] >= train_params["highseed"]:
                 return None, True, results, None, None, None
             else:
